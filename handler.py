@@ -1,70 +1,22 @@
-import os
 import json
 import urllib.request
-import pickle
-
-# Need this because openfaas python3 is 3.9 and centos8 has 3.6
-pickle.HIGHEST_PROTOCOL = 4
-pickle.DEFAULT_PROTOCOL = 4
-
-#from rq import Queue
-#from redis import Redis
-
-#def get_queue_name(msg):
-#    ds = msg['DataInfo']['DataSource']
-#    if ds == "S3":
-#        return "ingest"
-#    elif ds == "radon":
-#        mtype = msg['MessageType']
-#        if mtype == 'DATA_AVAILABLE':
-#            return "process"
-#        elif mtype == 'FULL_FORECAST_AVAILABLE':
-#            return "convert"
-#
-#    return None
-
-#def push_to_redis(msg):
-#    redis_conn = Redis(host=os.environ["REDIS_HOST"], port=os.environ["REDIS_PORT"])
-
-#    qname = get_queue_name(msg)
-
-#    if qname is None:
-#        print("No queue defined for this type of message")
-#        return
-
-#    q = Queue(qname, connection=redis_conn)
-
-#    job = None
-#    if qname == "ingest":
-#        job = q.enqueue('parse_and_load.process_notification', json.dumps(msg))
-#    elif qname == "process" or qname == "convert":
-#        job = q.enqueue('parse_and_process.process_notification', json.dumps(msg))
-
-#    print(f"Enqueued job {job} to queue {qname}")
 
 
-def process_notification(req):
-    print(f"Processing notification from {os.environ['Http_X_Amz_Sns_Topic_Arn']}")
+def process_notification(req, hdrs, m_callback, e_callback):
+    print(f"Processing notification from sns queue '{hdrs.get('X-Amz-Sns-Topic-Arn')}'")
+
     msg = json.loads(req['Message'])
 
-    producer = msg['DataInfo']['Producer']
-
-    if producer['Namespace'] == 'ECMWF':
-        print(msg)
-#        push_to_redis(msg)
-    elif producer['Namespace'] == 'radon' and producer['Id'] in ('131','134','242'):
-        print(msg)
-#        push_to_redis(msg)
-    else:
-        print(f"Got uninteresting message concerning {producer['Namespace']}/{producer['Id']}")
+    if (m_callback is not None and m_callback(msg)) or m_callback is None:
+        e_callback(msg)
 
 
-def process_subscription(req):
-    print(f"Processing subscription confirmation for topic {os.environ['Http_X_Amz_Sns_Topic_Arn']}")
+def process_subscription(req, hdrs):
+    print(f"Processing subscription confirmation for topic {hdrs.get('X-Amz-Sns-Topic-Arn')}")
     urllib.request.urlopen(req['SubscribeURL']).read()
 
 
-def handle(req):
+def handle(req, hdrs, m_callback, e_callback):
     """handle a request to the function
     Args:
         req (str): request body
@@ -79,14 +31,12 @@ def handle(req):
         return 'OK'
 
     try:
-        # http headers are environment variables in openfaas functions
-        # https://github.com/openfaas/workshop/blob/master/lab4.md#inject-configuration-through-environmental-variables
-        amz_type = os.environ["Http_X_Amz_Sns_Message_Type"]
+        amz_type = hdrs.get("X-Amz-Sns-Message-Type")
 
         if amz_type == "Notification":
-            process_notification(jreq)
+            process_notification(jreq["Records"][0]["Sns"], hdrs, m_callback, e_callback)
         elif amz_type == "SubscriptionConfirmation":
-            process_subscription(jreq)
+            process_subscription(jreq, hdrs)
         else:
             print(f"Unsupported x_amz_sns_message_type: {amz_type}")
 
