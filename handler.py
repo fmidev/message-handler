@@ -12,8 +12,8 @@ def process_notification(req, hdrs, m_callback, e_callback):
 
 
 def process_subscription(req, hdrs):
-    print(f"Processing subscription confirmation for topic {hdrs.get('X-Amz-Sns-Topic-Arn')}")
-    urllib.request.urlopen(req['SubscribeURL']).read()
+    print("Processing subscription confirmation for topic {} by reading url {}".format(hdrs.get('X-Amz-Sns-Topic-Arn'), req['SubscribeURL']))
+    print(urllib.request.urlopen(req['SubscribeURL']).read())
 
 
 def handle(req, hdrs, m_callback, e_callback):
