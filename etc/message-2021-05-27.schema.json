@@ -188,7 +188,7 @@
         },
         "S3Info": {
           "type": "array",
-          "$ref": "#/$defs/S3Info"
+          "items": { "$ref": "#/$defs/S3Info" }
         }
       },
       "oneOf": [
