@@ -84,7 +84,9 @@ def convert_2020_03_04_to_2021_05_27(message):
 def convert_to_2021_05_27(message):
     version = message['MessageVersion']
 
-    if version == '2020-03-04':
+    if version == '2021-05-27':
+        return message
+    elif version == '2020-03-04':
         return convert_2020_03_04_to_2021_05_27(message)
 
     raise Exception("Unable to convert from version '{}'".format(version))
