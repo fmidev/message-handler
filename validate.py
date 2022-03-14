@@ -2,9 +2,10 @@ import jsonschema
 import json
 import sys
 import datetime
+import os
 
 def validate(message, schema_version = "2021-05-27"):
-    with open("message-{}.schema.json".format(schema_version)) as fp:
+    with open("{}/etc/message-{}.schema.json".format(os.path.dirname(os.path.realpath(__file__)), schema_version)) as fp:
         reference = json.load(fp)
 
         try:
