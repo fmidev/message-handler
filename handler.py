@@ -34,7 +34,13 @@ def handle(req, hdrs, m_callback, e_callback):
         amz_type = hdrs.get("X-Amz-Sns-Message-Type")
 
         if amz_type == "Notification":
-            process_notification(jreq["Records"][0]["Sns"], hdrs, m_callback, e_callback)
+            msg = None
+            try:
+                msg = jreq["Records"][0]["Sns"]
+            except KeyError as e:
+                msg = jreq
+
+            process_notification(msg, hdrs, m_callback, e_callback)
         elif amz_type == "SubscriptionConfirmation":
             process_subscription(jreq, hdrs)
         else:
