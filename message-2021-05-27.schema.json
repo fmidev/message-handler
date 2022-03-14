@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Message",
+  "description": "Message format to pass information about meteorological forecast fields",
+  "required": [ "DataInfo", "MessageTime", "MessageType", "MessageVersion" ],
+  "type": "object",
+  "properties": {
+    "DataInfo": {
+      "type": "object",
+      "$ref": "#/$defs/DataInfo"
+    },
+    "MessageTime": {
+      "type": "string",
+      "format": "datetime"
+    },
+    "MessageType": {
+      "type": "string",
+      "enum": [ "DATA_AVAILABLE", "DATA_REMOVED", "FULL_FORECAST_AVAILABLE" ]
+    },
+    "MessageVersion": {
+      "type": "string",
+      "enum" : ["2021-05-27"]
+    }
+  },
+  "$defs": {
+    "DataInfo": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required" : [ "DataSource", "DataType", "Producer", "RunId" ],
+      "properties": {
+        "Producer": {
+          "type" : "object",
+          "$ref": "#/$defs/Producer"
+        },
+        "DataType": {
+          "type": "string",
+          "enum": [ "FORECAST" ]
+        },
+        "DataSource": {
+          "type": "object",
+          "$ref": "#/$defs/DataSource"
+        },
+        "RunId": {
+          "type": "string"
+        },
+        "ForecastInfo": {
+          "type": "object",
+          "$ref": "#/$defs/ForecastInfo"
+        }
+      }
+    },
+    "Producer": {
+      "type": "object",
+      "required": [ "Namespace", "Id" ],
+      "properties": {
+        "Namespace": {
+          "type" : "string"
+        },
+        "Id": {
+          "type": "string"
+        },
+        "SubProducer": {
+          "type": "string"
+        }
+      }
+    },
+    "ForecastInfo": {
+      "type": "object",
+      "required": ["AnalysisTime", "Steps"],
+      "properties": {
+        "AnalysisTime": {
+          "type": "string",
+          "format": "datetime"
+        },
+        "ForecastTypes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ForecastType" }
+        },
+        "Steps": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "Levels": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Level" }
+        },
+        "Parameters": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Parameter" }
+        },
+        "Geometries": {
+          "type": "object",
+          "$ref": "#/$defs/Geometry"
+        }
+      }
+    },
+    "File": {
+      "type": "object",
+      "required": ["FileName"],
+      "properties": {
+        "FileName": {
+          "type": "string"
+        },
+        "Md5Sum": {
+          "type": "string"
+        },
+        "FileType": {
+          "type": "string"
+        },
+        "ExpirationTime": {
+          "type": "string",
+          "format": "datetime"
+        }
+      }
+    },
+    "ForecastType": {
+      "type": "object",
+      "required": ["Type"],
+      "properties": {
+        "Type": {
+          "type": "string"
+        },
+        "Value": {
+          "type": "number"
+        },
+        "ValueList": {
+          "type": "array", 
+          "items": { "type": "number" }
+        }
+      },
+      "oneOf": [
+        { "required": [ "Value" ] },
+        { "required": [ "ValueList" ] }
+      ]
+    },
+    "Geometry": {
+      "type": "object",
+      "properties": {
+        "RadonGeometryId": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "Parameter": {
+      "type": "object",
+      "required": [ "Name" ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        }
+      }
+    },
+    "Level": {
+      "type": "object",
+      "required" : [ "Type" ],
+      "properties": {
+        "Type": {
+          "type": "string"
+        },
+        "Value": {
+          "type": "number"
+        },
+        "Value2": {
+          "type": "number"
+        },
+        "ValueList": {
+          "type": "array", 
+          "items": { "type": "number" }
+        }
+      },
+      "oneOf": [
+        { "required": [ "Value" ] },
+        { "required": [ "ValueList" ] }
+      ]
+    },
+    "DataSource": {
+      "type": "object",
+      "required": [ "Name" ],
+      "properties": {
+        "Name": {
+          "type": "string",
+          "enum": ["S3", "radon"]
+        },
+        "RadonInfo": {
+          "type": "object",
+          "$ref": "#/$defs/RadonInfo"
+        },
+        "S3Info": {
+          "type": "array",
+          "$ref": "#/$defs/S3Info"
+        }
+      },
+      "oneOf": [
+        { "required": [ "RadonInfo" ] },
+        { "required": [ "S3Info" ] }
+      ]
+    },
+    "RadonInfo": {
+      "type": "object",
+      "properties": {
+        "TableName": {
+          "type": "string"
+        },
+        "HostName": {
+          "type": "string"
+        },
+        "Port": {
+          "type": "number"
+        }
+      }
+    },
+    "S3Info": {
+      "type": "object",
+      "required": [ "BucketName"],
+      "properties": {
+        "Files": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/File" }
+        },
+        "AwsRegion": {
+          "type": "string"
+        },
+        "BucketName": {
+          "type": "string"
+        },
+        "EndPoint": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
