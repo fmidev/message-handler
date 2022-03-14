@@ -200,7 +200,8 @@
       "type": "object",
       "properties": {
         "TableName": {
-          "type": "string"
+          "type": "array",
+          "items": { "type": "string" }
         },
         "HostName": {
           "type": "string"
