@@ -1,11 +1,12 @@
 import json
 import urllib.request
-
+from convert_version import *
 
 def process_notification(req, hdrs, m_callback, e_callback):
     print(f"Processing notification from sns queue '{hdrs.get('X-Amz-Sns-Topic-Arn')}'")
 
     msg = json.loads(req['Message'])
+    msg = convert_to_2021_05_27(msg)
 
     if (m_callback is not None and m_callback(msg)) or m_callback is None:
         e_callback(msg)
