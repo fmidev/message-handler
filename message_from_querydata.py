@@ -97,7 +97,7 @@ def read_metadata(filename):
     }
 
 
-def create_message(metadata, s3bucket, s3endpoint = None, awsregion = None, subproducer = None):
+def create_message(metadata, run_id, s3bucket, s3endpoint = None, awsregion = None, subproducer = None):
 
     message = {
       "MessageVersion" : "2021-05-27",
@@ -126,7 +126,7 @@ def create_message(metadata, s3bucket, s3endpoint = None, awsregion = None, subp
               "Levels" : metadata['levels'],
               "Steps" : metadata['times']
             },
-            "RunId" : orig_message['DataInfo']['RunId']
+            "RunId" : run_id
         }
     }
 
