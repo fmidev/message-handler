@@ -139,8 +139,6 @@ def create_message(metadata, run_id, s3bucket, s3endpoint = None, awsregion = No
     if subproducer is not None:
         message['DataInfo']['Producer']['SubProducer'] = subproducer
 
-    print(json.dumps(message, indent=4))
-
     if not validate(message):
         print('Error validating message')
         return None
