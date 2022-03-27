@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Message",
   "description": "Message format to pass information about meteorological forecast fields",
+  "additionalProperties" : false,
   "required": [ "DataInfo", "MessageTime", "MessageType", "MessageVersion" ],
   "type": "object",
   "properties": {
@@ -26,6 +27,7 @@
     "DataInfo": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
+      "additionalProperties" : false,
       "required" : [ "DataSource", "DataType", "Producer", "RunId" ],
       "properties": {
         "Producer": {
@@ -51,6 +53,7 @@
     },
     "Producer": {
       "type": "object",
+      "additionalProperties" : false,
       "required": [ "Namespace", "Id" ],
       "properties": {
         "Namespace": {
@@ -66,6 +69,7 @@
     },
     "ForecastInfo": {
       "type": "object",
+      "additionalProperties" : false,
       "required": ["AnalysisTime", "Steps"],
       "properties": {
         "AnalysisTime": {
@@ -96,6 +100,7 @@
     },
     "File": {
       "type": "object",
+      "additionalProperties" : false,
       "required": ["FileName"],
       "properties": {
         "FileName": {
@@ -115,6 +120,7 @@
     },
     "ForecastType": {
       "type": "object",
+      "additionalProperties" : false,
       "required": ["Type"],
       "properties": {
         "Type": {
@@ -135,6 +141,7 @@
     },
     "Geometry": {
       "type": "object",
+      "additionalProperties" : false,
       "properties": {
         "RadonGeometryId": {
           "type": "number",
@@ -144,6 +151,7 @@
     },
     "Parameter": {
       "type": "object",
+      "additionalProperties" : false,
       "required": [ "Name" ],
       "properties": {
         "Name": {
@@ -153,6 +161,7 @@
     },
     "Level": {
       "type": "object",
+      "additionalProperties" : false,
       "required" : [ "Type" ],
       "properties": {
         "Type": {
@@ -176,6 +185,7 @@
     },
     "DataSource": {
       "type": "object",
+      "additionalProperties" : false,
       "required": [ "Name" ],
       "properties": {
         "Name": {
@@ -198,6 +208,7 @@
     },
     "RadonInfo": {
       "type": "object",
+      "additionalProperties" : false,
       "properties": {
         "TableName": {
           "type": "array",
@@ -214,6 +225,7 @@
     "S3Info": {
       "type": "object",
       "required": [ "BucketName"],
+      "additionalProperties" : false,
       "properties": {
         "Files": {
           "type": "array",
