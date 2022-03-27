@@ -112,7 +112,7 @@ def create_message(metadata, run_id, s3bucket, s3endpoint = None, awsregion = No
                  "BucketName": s3bucket,
                  "Files" : [
                    {
-                     "FileName" : "{}/{}".format(s3bucket, metadata['filename']),
+                     "FileName" : "{}/{}".format(metadata['filename']),
                      "FileType" : "QUERYDATA",
                      "Md5Sum" : md5(metadata['filename'])
                    }
