@@ -97,7 +97,10 @@ def read_metadata(filename):
     }
 
 
-def create_message(metadata, run_id, s3bucket, s3endpoint = None, awsregion = None, subproducer = None):
+def create_message(metadata, run_id, s3bucket, s3key, s3endpoint = None, awsregion = None, subproducer = None):
+
+    assert(s3key.startswith(s3bucket + '/') == False)
+    assert(s3key.startswith('s3://') == False)
 
     message = {
       "MessageVersion" : "2021-05-27",
@@ -112,7 +115,7 @@ def create_message(metadata, run_id, s3bucket, s3endpoint = None, awsregion = No
                  "BucketName": s3bucket,
                  "Files" : [
                    {
-                     "FileName" : "{}/{}".format(metadata['filename']),
+                     "FileName" : s3key,
                      "FileType" : "QUERYDATA",
                      "Md5Sum" : md5(metadata['filename'])
                    }
@@ -147,11 +150,11 @@ def create_message(metadata, run_id, s3bucket, s3endpoint = None, awsregion = No
     return message
 
 
-def create_message_from_querydata(filename, run_id, s3bucket, subproducer = None):
+def create_message_from_querydata(filename, run_id, s3bucket, s3key, subproducer = None):
 
     metadata = read_metadata(filename)
-    return create_message(metadata, run_id, s3bucket, subproducer = subproducer)
+    return create_message(metadata, run_id, s3bucket, s3key, subproducer = subproducer)
 
 
 if __name__ == "__main__":
-    create_message_from_querydata(sys.argv[1], sys.argv[2], sys.argv[3])
+    create_message_from_querydata(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[1])
