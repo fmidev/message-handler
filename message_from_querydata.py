@@ -150,10 +150,10 @@ def create_message(metadata, run_id, s3bucket, s3key, s3endpoint = None, awsregi
     return message
 
 
-def create_message_from_querydata(filename, run_id, s3bucket, s3key, subproducer = None, awsregion = None):
+def create_message_from_querydata(filename, run_id, s3bucket, s3key, s3endpoint = None, awsregion = None, subproducer = None):
 
     metadata = read_metadata(filename)
-    return create_message(metadata, run_id, s3bucket, s3key, subproducer = subproducer, awsregion = awsregion)
+    return create_message(metadata, run_id, s3bucket, s3key, s3endpoint = s3endpoint, subproducer = subproducer, awsregion = awsregion)
 
 
 if __name__ == "__main__":
